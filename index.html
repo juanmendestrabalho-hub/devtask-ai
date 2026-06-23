@@ -14,16 +14,13 @@
 
   <h1>🧠 DevTask AI</h1>
 
-  <!-- INPUT -->
   <div class="input-area">
     <input type="text" id="taskInput" placeholder="Digite sua tarefa...">
     <button onclick="addTask()">Adicionar</button>
   </div>
 
-  <!-- BUSCA -->
   <input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
 
-  <!-- FILTRO -->
   <select id="filter" onchange="render()">
     <option value="all">Todos</option>
     <option value="alta">Alta</option>
@@ -31,17 +28,14 @@
     <option value="baixa">Baixa</option>
   </select>
 
-  <!-- DASHBOARD -->
   <div class="dashboard">
     <div>🔥 Alta: <span id="alta"></span></div>
     <div>⚠ Média: <span id="media"></span></div>
     <div>🟢 Baixa: <span id="baixa"></span></div>
   </div>
 
-  <!-- GRÁFICO -->
   <canvas id="grafico"></canvas>
 
-  <!-- LISTA -->
   <div id="tasks"></div>
 
 </div>
