@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 const fetch = require("node-fetch");
@@ -22,8 +21,12 @@ app.post("/ia", async (req, res) => {
         model: "gpt-4o-mini",
         messages: [
           {
+            role: "system",
+            content: "Responda SOMENTE em JSON com prioridade (alta, media, baixa) e categoria."
+          },
+          {
             role: "user",
-            content: `Classifique essa tarefa em JSON com prioridade (alta, media, baixa) e categoria: ${texto}`
+            content: texto
           }
         ]
       })
@@ -31,11 +34,13 @@ app.post("/ia", async (req, res) => {
 
     const data = await resposta.json();
 
-    res.json(data.choices[0].message.content);
+    const respostaIA = data.choices[0].message.content;
+
+    res.json(respostaIA);
 
   } catch (err) {
     res.status(500).json({ erro: "Erro na IA" });
   }
 });
 
-app.listen(3000, () => console.log("Servidor rodando..."));
+app.listen(3000, () => console.log("Servidor rodando"));
