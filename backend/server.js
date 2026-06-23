@@ -27,8 +27,9 @@ Analise a tarefa e responda SOMENTE em JSON:
 
 {
   "prioridade": "alta | media | baixa",
-  "categoria": "Dev | Meeting | Suporte | Infra | Geral",
-  "sugestao": "ação recomendada curta"
+  "categoria": "Dev | Suporte | Infra | Geral",
+  "sugestao": "ação recomendada curta",
+  "tempo_estimado": "tempo em minutos"
 }
 `
           },
@@ -41,11 +42,9 @@ Analise a tarefa e responda SOMENTE em JSON:
     });
 
     const data = await resposta.json();
-    const respostaIA = data.choices[0].message.content;
+    res.json(data.choices[0].message.content);
 
-    res.json(respostaIA);
-
-  } catch (err) {
+  } catch {
     res.status(500).json({ erro: "Erro na IA" });
   }
 });
