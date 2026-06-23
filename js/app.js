@@ -1,7 +1,6 @@
 const API = "https://devtask-ai-backend.onrender.com";
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let chart;
 
 function salvar() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -31,13 +30,14 @@ async function addTask() {
 
   if (!texto) return;
 
-  const resultado = await analisarIA(texto);
+  const ia = await analisarIA(texto);
 
   tasks.push({
+    id: Date.now(),
     texto,
-    prioridade: resultado.prioridade,
-    categoria: resultado.categoria,
-    sugestao: resultado.sugestao
+    prioridade: ia.prioridade,
+    categoria: ia.categoria,
+    sugestao: ia.sugestao
   });
 
   input.value = "";
@@ -45,64 +45,49 @@ async function addTask() {
   render();
 }
 
-function removerTask(index) {
-  tasks.splice(index, 1);
-  salvar();
-  render();
-}
+function render() {
+  document.getElementById("alta").innerHTML = "";
+  document.getElementById("media").innerHTML = "";
+  document.getElementById("baixa").innerHTML = "";
 
-function atualizarGrafico(alta, media, baixa) {
-  const ctx = document.getElementById("grafico");
+  tasks.forEach(task => {
+    const el = document.createElement("div");
+    el.className = "task";
+    el.draggable = true;
+    el.id = task.id;
 
-  if (chart) chart.destroy();
+    el.ondragstart = drag;
 
-  chart = new Chart(ctx, {
-    type: "doughnut",
-    data: {
-      labels: ["Alta", "Média", "Baixa"],
-      datasets: [{
-        data: [alta, media, baixa]
-      }]
-    }
+    el.innerHTML = `
+      <strong>${task.texto}</strong>
+      <p>${task.categoria}</p>
+      <p>${task.sugestao}</p>
+    `;
+
+    document.getElementById(task.prioridade).appendChild(el);
   });
 }
 
-function render() {
-  const container = document.getElementById("tasks");
-  const search = document.getElementById("search").value.toLowerCase();
-  const filter = document.getElementById("filter").value;
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
 
-  container.innerHTML = "";
+function allowDrop(ev) {
+  ev.preventDefault();
+}
 
-  let alta = 0, media = 0, baixa = 0;
+function drop(ev) {
+  ev.preventDefault();
+  const id = ev.dataTransfer.getData("text");
+  const status = ev.currentTarget.dataset.status;
 
-  tasks
-    .filter((t) =>
-      t.texto.toLowerCase().includes(search) &&
-      (filter === "all" || t.prioridade === filter)
-    )
-    .forEach((t, index) => {
+  tasks = tasks.map(t => {
+    if (t.id == id) t.prioridade = status;
+    return t;
+  });
 
-      if (t.prioridade === "alta") alta++;
-      if (t.prioridade === "media") media++;
-      if (t.prioridade === "baixa") baixa++;
-
-      container.innerHTML += `
-        <div class="task ${t.prioridade}">
-          <h3>${t.texto}</h3>
-          <p>Prioridade: ${t.prioridade}</p>
-          <p>Categoria: ${t.categoria}</p>
-          <p>Sugestão: ${t.sugestao}</p>
-          <button onclick="removerTask(${index})">Excluir</button>
-        </div>
-      `;
-    });
-
-  document.getElementById("alta").textContent = alta;
-  document.getElementById("media").textContent = media;
-  document.getElementById("baixa").textContent = baixa;
-
-  atualizarGrafico(alta, media, baixa);
+  salvar();
+  render();
 }
 
 render();
