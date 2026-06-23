@@ -22,7 +22,15 @@ app.post("/ia", async (req, res) => {
         messages: [
           {
             role: "system",
-            content: "Responda SOMENTE em JSON com prioridade (alta, media, baixa) e categoria."
+            content: `
+Analise a tarefa e responda SOMENTE em JSON:
+
+{
+  "prioridade": "alta | media | baixa",
+  "categoria": "Dev | Meeting | Suporte | Infra | Geral",
+  "sugestao": "ação recomendada curta"
+}
+`
           },
           {
             role: "user",
@@ -33,7 +41,6 @@ app.post("/ia", async (req, res) => {
     });
 
     const data = await resposta.json();
-
     const respostaIA = data.choices[0].message.content;
 
     res.json(respostaIA);
