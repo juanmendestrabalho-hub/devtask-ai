@@ -9,9 +9,7 @@ function salvar() {
 async function analisarIA(texto) {
   const res = await fetch(`${API}/ia`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ texto })
   });
 
@@ -20,7 +18,12 @@ async function analisarIA(texto) {
   try {
     return JSON.parse(data);
   } catch {
-    return { prioridade: "media", categoria: "Geral", sugestao: "-" };
+    return {
+      prioridade: "media",
+      categoria: "Geral",
+      sugestao: "-",
+      tempo_estimado: "-"
+    };
   }
 }
 
@@ -30,6 +33,9 @@ async function addTask() {
 
   if (!texto) return;
 
+  const btn = document.querySelector("button");
+  btn.innerText = "...";
+
   const ia = await analisarIA(texto);
 
   tasks.push({
@@ -37,18 +43,21 @@ async function addTask() {
     texto,
     prioridade: ia.prioridade,
     categoria: ia.categoria,
-    sugestao: ia.sugestao
+    sugestao: ia.sugestao,
+    tempo: ia.tempo_estimado
   });
 
   input.value = "";
+  btn.innerText = "+";
+
   salvar();
   render();
 }
 
 function render() {
-  document.getElementById("alta").innerHTML = "";
-  document.getElementById("media").innerHTML = "";
-  document.getElementById("baixa").innerHTML = "";
+  ["alta","media","baixa"].forEach(c => {
+    document.getElementById(c).innerHTML = "";
+  });
 
   tasks.forEach(task => {
     const el = document.createElement("div");
@@ -61,11 +70,14 @@ function render() {
     el.innerHTML = `
       <strong>${task.texto}</strong>
       <p>${task.categoria}</p>
-      <p>${task.sugestao}</p>
+      <p>💡 ${task.sugestao}</p>
+      <p>⏱ ${task.tempo}</p>
     `;
 
     document.getElementById(task.prioridade).appendChild(el);
   });
+
+  analytics();
 }
 
 function drag(ev) {
@@ -78,6 +90,7 @@ function allowDrop(ev) {
 
 function drop(ev) {
   ev.preventDefault();
+
   const id = ev.dataTransfer.getData("text");
   const status = ev.currentTarget.dataset.status;
 
@@ -88,6 +101,15 @@ function drop(ev) {
 
   salvar();
   render();
+}
+
+function analytics() {
+  const total = tasks.length;
+  const alta = tasks.filter(t => t.prioridade === "alta").length;
+
+  if (total > 0) {
+    console.log("Produtividade:", ((alta / total) * 100).toFixed(1) + "%");
+  }
 }
 
 render();
