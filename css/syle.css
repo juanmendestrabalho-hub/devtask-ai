@@ -1,28 +1,40 @@
 body {
-  font-family: "Inter", sans-serif;
+  margin: 0;
+  font-family: Inter, sans-serif;
   background: #0f172a;
   color: #e2e8f0;
 }
 
-header {
-  text-align: center;
+.app {
+  display: flex;
+}
+
+.sidebar {
+  width: 220px;
+  background: #020617;
   padding: 20px;
 }
 
-.input-area {
-  text-align: center;
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+.topbar {
+  display: flex;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
 input {
+  flex: 1;
   padding: 10px;
-  width: 300px;
   border-radius: 6px;
   border: none;
 }
 
 button {
-  padding: 10px;
+  padding: 10px 15px;
   background: #6366f1;
   border: none;
   color: white;
@@ -33,25 +45,25 @@ button {
 .board {
   display: flex;
   gap: 20px;
-  padding: 20px;
 }
 
 .column {
   flex: 1;
   background: #1e293b;
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 12px;
   min-height: 400px;
 }
 
 .task {
   background: #334155;
-  padding: 10px;
-  margin: 10px 0;
+  padding: 12px;
   border-radius: 8px;
+  margin: 10px 0;
   cursor: grab;
+  transition: 0.2s;
 }
 
-.task p {
-  margin: 5px 0;
+.task:hover {
+  transform: scale(1.02);
 }
