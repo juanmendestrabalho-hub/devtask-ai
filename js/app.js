@@ -21,7 +21,7 @@ async function analisarIA(texto) {
   try {
     return JSON.parse(data);
   } catch {
-    return { prioridade: "media", categoria: "Geral" };
+    return { prioridade: "media", categoria: "Geral", sugestao: "-" };
   }
 }
 
@@ -36,10 +36,17 @@ async function addTask() {
   tasks.push({
     texto,
     prioridade: resultado.prioridade,
-    categoria: resultado.categoria
+    categoria: resultado.categoria,
+    sugestao: resultado.sugestao
   });
 
   input.value = "";
+  salvar();
+  render();
+}
+
+function removerTask(index) {
+  tasks.splice(index, 1);
   salvar();
   render();
 }
@@ -70,11 +77,11 @@ function render() {
   let alta = 0, media = 0, baixa = 0;
 
   tasks
-    .filter(t =>
+    .filter((t) =>
       t.texto.toLowerCase().includes(search) &&
       (filter === "all" || t.prioridade === filter)
     )
-    .forEach(t => {
+    .forEach((t, index) => {
 
       if (t.prioridade === "alta") alta++;
       if (t.prioridade === "media") media++;
@@ -85,6 +92,8 @@ function render() {
           <h3>${t.texto}</h3>
           <p>Prioridade: ${t.prioridade}</p>
           <p>Categoria: ${t.categoria}</p>
+          <p>Sugestão: ${t.sugestao}</p>
+          <button onclick="removerTask(${index})">Excluir</button>
         </div>
       `;
     });
