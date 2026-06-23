@@ -1,39 +1,42 @@
+const API = "https://devtask-ai-backend.onrender.com";
+
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let chart;
 
-// SALVAR
 function salvar() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// IA SIMULADA
-function analisarPrioridade(texto) {
-  texto = texto.toLowerCase();
+async function analisarIA(texto) {
+  const res = await fetch(`${API}/ia`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ texto })
+  });
 
-  if (texto.includes("urgente") || texto.includes("bug")) return "alta";
-  if (texto.includes("revisar") || texto.includes("ajustar")) return "media";
-  return "baixa";
+  const data = await res.json();
+
+  try {
+    return JSON.parse(data);
+  } catch {
+    return { prioridade: "media", categoria: "Geral" };
+  }
 }
 
-function analisarCategoria(texto) {
-  texto = texto.toLowerCase();
-
-  if (texto.includes("bug") || texto.includes("código")) return "Dev";
-  if (texto.includes("reunião")) return "Meeting";
-  return "Geral";
-}
-
-// ADICIONAR
-function addTask() {
+async function addTask() {
   const input = document.getElementById("taskInput");
   const texto = input.value;
 
   if (!texto) return;
 
+  const resultado = await analisarIA(texto);
+
   tasks.push({
     texto,
-    prioridade: analisarPrioridade(texto),
-    categoria: analisarCategoria(texto)
+    prioridade: resultado.prioridade,
+    categoria: resultado.categoria
   });
 
   input.value = "";
@@ -41,7 +44,6 @@ function addTask() {
   render();
 }
 
-// GRÁFICO
 function atualizarGrafico(alta, media, baixa) {
   const ctx = document.getElementById("grafico");
 
@@ -58,7 +60,6 @@ function atualizarGrafico(alta, media, baixa) {
   });
 }
 
-// RENDER
 function render() {
   const container = document.getElementById("tasks");
   const search = document.getElementById("search").value.toLowerCase();
