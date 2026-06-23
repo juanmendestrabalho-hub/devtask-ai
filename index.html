@@ -5,39 +5,46 @@
 <title>DevTask Pro</title>
 
 <link rel="stylesheet" href="css/style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 <body>
 
-<header>
-  <h1>🧠 DevTask Pro</h1>
-</header>
+<div class="app">
 
-<div class="input-area">
-  <input type="text" id="taskInput" placeholder="Digite sua tarefa...">
-  <button onclick="addTask()">Adicionar</button>
+  <aside class="sidebar">
+    <h2>🧠 DevTask</h2>
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+      <input id="taskInput" placeholder="Digite uma tarefa...">
+      <button onclick="addTask()">+</button>
+    </div>
+
+    <div class="board">
+
+      <div class="column" data-status="alta" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>🔥 Alta</h3>
+        <div id="alta"></div>
+      </div>
+
+      <div class="column" data-status="media" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>⚠ Média</h3>
+        <div id="media"></div>
+      </div>
+
+      <div class="column" data-status="baixa" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>🟢 Baixa</h3>
+        <div id="baixa"></div>
+      </div>
+
+    </div>
+
+  </main>
+
 </div>
 
-<div class="board">
-
-  <div class="column" data-status="alta" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <h2>🔥 Alta</h2>
-    <div class="task-list" id="alta"></div>
-  </div>
-
-  <div class="column" data-status="media" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <h2>⚠ Média</h2>
-    <div class="task-list" id="media"></div>
-  </div>
-
-  <div class="column" data-status="baixa" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <h2>🟢 Baixa</h2>
-    <div class="task-list" id="baixa"></div>
-  </div>
-
-</div>
-
-</body>
 <script src="js/app.js"></script>
+</body>
 </html>
