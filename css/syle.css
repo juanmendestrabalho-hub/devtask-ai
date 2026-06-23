@@ -35,6 +35,11 @@ button {
   text-align: left;
 }
 
+.task button {
+  margin-top: 10px;
+  background: red;
+}
+
 .alta { border-left: 5px solid red; }
 .media { border-left: 5px solid orange; }
 .baixa { border-left: 5px solid green; }
