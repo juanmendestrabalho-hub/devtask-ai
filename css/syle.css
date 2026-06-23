@@ -33,11 +33,6 @@ button {
   padding: 15px;
   border-radius: 10px;
   text-align: left;
-  transition: 0.3s;
-}
-
-.task:hover {
-  transform: scale(1.02);
 }
 
 .alta { border-left: 5px solid red; }
